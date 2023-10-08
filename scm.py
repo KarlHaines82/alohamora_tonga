@@ -11,10 +11,10 @@ def execute_register_scm(svc_id, cmd_id, args):
                 raise "Execute register SCM currently supports only up to %d parameters" % REGISTER_SCM_SUPPORTED_ARGS
         args_str = " ".join(["%08X" % arg for arg in args]).strip()
         command_str = "%s reg %d %d %d %s" % (FUZZ_ZONE_PATH, svc_id, cmd_id, len(args), args_str)
-        resp_str = execute_privileged_command(command_str)
+        resp_str = execute_privileged_command(command_str).decode("hex")
         if resp_str.find("Failed") >= 0:
                 raise "Failed to send register SCM! %s" % resp_str
-        return int(re.search("^IOCTL RES: (\d+)", resp_str, re.MULTILINE).group(1))
+        return re.search("^IOCTL RES: (\d+)", resp_str, re.MULTILINE).group(1)
 
 def execute_raw_scm(svc_id, cmd_id, request_data, response_length):
         '''

@@ -1,4 +1,7 @@
-import subprocess, os, re
+import os
+import re
+import subprocess
+
 from consts import *
 
 def execute_privileged_command(command_str):
@@ -20,7 +23,6 @@ def dev_mem_read_memory(address, length):
         '''
         Reads memory from the device using /dev/mem
         '''
-        output = execute_privileged_command("dd if=/dev/mem of=%s bs=1 count=%d skip=%d" %
-                     						(REMOTE_TEMP_DUMP_PATH, length, address))
+        output = execute_privileged_command("dd if=/dev/mem of=%s bs=1 count=%d skip=%d" % (REMOTE_TEMP_DUMP_PATH, length, address))
         output = execute_privileged_command("hd %s" % REMOTE_TEMP_DUMP_PATH)
         return "".join(re.findall("^[0-9a-f]{8}: (.*?) s", str(output.decode("hex")), re.MULTILINE)).replace(" ","")
